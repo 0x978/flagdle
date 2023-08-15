@@ -10,7 +10,7 @@ const GuessBox: FC<GuessBoxProps> = ({country}) => {
 
     return(
         <main className={"w border-black border-4"}>
-            <h1>{country || "​"}</h1>
+            <h1 key={country}>{country}</h1>
         </main>
     )
 }
