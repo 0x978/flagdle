@@ -1,15 +1,16 @@
 import {FC} from "react"
 
 interface GuessBoxProps {
-    country?:string
+    country:string
+    isCorrect: boolean
 }
 
-const GuessBox: FC<GuessBoxProps> = ({country}) => {
+const GuessBox: FC<GuessBoxProps> = ({country,isCorrect}) => {
 
-    console.log(country)
+    const isCorrectStyle = isCorrect ? `border-green-500` : `border-red-500`
 
     return(
-        <main className={"w border-black border-4"}>
+        <main className={`border-4 ${isCorrectStyle}`}>
             <h1 key={country}>{country}</h1>
         </main>
     )

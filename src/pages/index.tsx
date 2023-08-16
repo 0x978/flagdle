@@ -1,14 +1,16 @@
 import {FC, useEffect, useState} from "react"
-import Image from "next/image";
 import GuessBoxes from "@/components/guessBoxes";
 import Head from 'next/head'
 import Select from "react-select";
 import countries from "@/misc/countries";
+import {guess} from "@/misc/types";
+import Submit from "@/components/submit";
+
 
 const Index: FC = () => {
     const [currentGuess, setCurrentGuess] = useState<string>()
     const [isGameActive, setIsGameActive] = useState<boolean>(true)
-    const [guesses, setGuesses] = useState<string[]>([])
+    const [guesses, setGuesses] = useState<guess[]>([])
 
     useEffect(() => {
         if (guesses.length >= 6) {
@@ -19,22 +21,27 @@ const Index: FC = () => {
 
     async function handleGuess(guess: string) {
 
-        if (guesses.some((ans) => guess === ans)) {
+        if (guesses.some((ans) => guess === ans.country)) {
             alert("Already guessed")
             return
         }
-
-        setGuesses((prevState) => {
-            return [...prevState, guess]
-        })
-
         const res = await fetch('/api/guessHandler', {
             method: 'POST',
-            body: JSON.stringify(guess)
+            body: guess
         })
+
         const data = await res.json();
-        if (data) {
-            console.log(data)
+        const correct:boolean = data.correct
+        const newGuess = {
+            country:guess,
+            correct:correct,
+        }
+
+        setGuesses((prevState) => {
+            return [...prevState, newGuess]
+        })
+        if(correct){
+            setIsGameActive(false)
         }
     }
 
@@ -55,24 +62,8 @@ const Index: FC = () => {
                         src="https://cdn.britannica.com/03/3303-004-C17F03F9/Flag-Tuvalu.jpg"
                         alt="The daily flag"
                     />
-                    <Select
-                        className={"w-96"}
-                        id="country"
-                        onChange={(guess) => guess ? setCurrentGuess(guess.value) : alert("Please select a country")}
-                        options={countries.map((country) => ({value: country, label: country}))}
-                        placeholder="Select an option"
-                    />
 
-                    <div className="mt-4">
-                        <button onClick={() => {
-                            if (currentGuess) {
-                                void handleGuess(currentGuess)
-                            } else {
-                                alert("Please select a guess")
-                            }
-                        }}>Submit
-                        </button>
-                    </div>
+                    {isGameActive && <Submit currentGuess={currentGuess} setCurrentGuess={setCurrentGuess} handleGuess={handleGuess} />}
 
                     {guesses.length > 0 && <GuessBoxes guesses={guesses}/>}
 
