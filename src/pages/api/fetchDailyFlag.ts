@@ -27,7 +27,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         await logger(ip, dailyCountry, flag)
     }
     catch (e){
+        console.log("------------------------------------------------------------------------------------------")
         console.log("LOGGING FAILED")
+        console.log(e)
     }
 
     res.status(200).json({flag:flag})

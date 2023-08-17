@@ -10,7 +10,7 @@ const GuessBox: FC<GuessBoxProps> = ({country,isCorrect}) => {
     const isCorrectStyle = isCorrect ? `border-green-500` : `border-red-500`
 
     return(
-        <main className={`border-4 ${isCorrectStyle}`}>
+        <main className={`border-4`}>
             <h1 className={"text-superCoolEdgyPurple"} key={country}>{country}</h1>
         </main>
     )
