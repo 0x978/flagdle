@@ -29,6 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     catch (e){
         console.log("------------------------------------------------------------------------------------------")
         console.log("LOGGING FAILED")
+        console.log(ip)
         console.log(e)
     }
 
