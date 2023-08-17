@@ -1,8 +1,6 @@
 import {FC, useEffect, useState} from "react"
 import GuessBoxes from "@/components/guessBoxes";
 import Head from 'next/head'
-import Select from "react-select";
-import countries from "@/misc/countries";
 import {guess} from "@/misc/types";
 import Submit from "@/components/submit";
 
@@ -11,6 +9,7 @@ const Index: FC = () => {
     const [currentGuess, setCurrentGuess] = useState<string>()
     const [isGameActive, setIsGameActive] = useState<boolean>(true)
     const [guesses, setGuesses] = useState<guess[]>([])
+    const [flag,setFlag] = useState<string>("")
 
     useEffect(() => {
         if (guesses.length >= 6) {
@@ -18,6 +17,21 @@ const Index: FC = () => {
             setIsGameActive(false)
         }
     }, [guesses])
+
+    useEffect(() => {
+        async function fetchFlag(){
+            const res = await fetch("/api/fetchDailyFlag")
+            const data = await res.json()
+            console.log(data)
+            if(data.flag){
+                setFlag(data.flag)
+            }
+            else{
+                alert("Error fetching flag")
+            }
+        }
+        void fetchFlag()
+    },[])
 
     async function handleGuess(guess: string) {
 
@@ -54,12 +68,12 @@ const Index: FC = () => {
                 <link rel="icon" href="/favicon.ico"/>
             </Head>
 
-            <main className="h-screen flex justify-center text-center my-3">
-                <div className="flex flex-col items-center">
-                    <h1 className="text-5xl">Flag Daily game thing</h1>
+            <main className="h-screen flex justify-center text-center bg-deepPurple">
+                <div className="flex flex-col items-center my-3 space-y-2">
+                    <h1 className="text-5xl text-superCoolEdgyPurple">Flag Daily game thing</h1>
                     <img
                         className="w-96"
-                        src="https://cdn.britannica.com/03/3303-004-C17F03F9/Flag-Tuvalu.jpg"
+                        src={flag}
                         alt="The daily flag"
                     />
 

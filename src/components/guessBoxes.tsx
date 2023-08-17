@@ -9,10 +9,10 @@ interface GuessBoxesProps {
 
 const GuessBoxes: FC<GuessBoxesProps> = ({guesses}) => {
     return(
-        <div className={"w-72 border-4 space-y-2"}>
+        <div className={"w-72 space-y-2"}>
             {guesses.map((guess) => {
                 return(
-                    <GuessBox country={guess.country} isCorrect={guess.correct}/>
+                    <GuessBox country={guess.country} isCorrect={guess.correct} key={guess.country}/>
                 )
             })}
         </div>

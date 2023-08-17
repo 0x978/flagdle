@@ -11,7 +11,7 @@ const GuessBox: FC<GuessBoxProps> = ({country,isCorrect}) => {
 
     return(
         <main className={`border-4 ${isCorrectStyle}`}>
-            <h1 key={country}>{country}</h1>
+            <h1 className={"text-superCoolEdgyPurple"} key={country}>{country}</h1>
         </main>
     )
 }
