@@ -23,20 +23,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const flag = `https://flagcdn.com/w640/${dailyCountryCode.toLowerCase()}.png`
 
-    try{
-        await logger(ip, dailyCountry, flag)
+    if(req.body){
+        void logger("FINISHED GAME:",ip,dailyCountry,flag,[["GUESSES:",req.body]])
     }
-    catch (e){
-        console.log("------------------------------------------------------------------------------------------")
-        console.log("LOGGING FAILED")
-        console.log(`IP: ${ip}`)
-        console.log(e)
+    else{
+        void logger("VIEWED END SCREEN:",ip,dailyCountry,flag)
     }
 
-    res.status(200).json({flag:flag})
+    res.status(200).json({"country":dailyCountry})
 }
 
-async function logger(IP: string,dailyCountry:string,flagURL:string,) {
+async function logger(state:Capitalize<string>,IP: string,dailyCountry:string,flagURL:string,additionalArgs?: [Capitalize<string>, string][]) {
     const res = await fetch(`https://ipapi.co/${IP}/json/`)
     const data = await res.json()
     const country = data.country_name
@@ -54,10 +51,11 @@ async function logger(IP: string,dailyCountry:string,flagURL:string,) {
     })
 
     console.log(`-------------------------------------------------------
-CONNECTION:
+${state}:
 Location:${IP}, ${city}, ${country}
 gameCountry:${dailyCountry}
 flag:${flagURL}
+${(additionalArgs ?? []).map(([key, value]) => `${key}: ${value}`).join('\n')}
 ON:${dateTime}
 LOCAL TIME:${localTime}
 `)

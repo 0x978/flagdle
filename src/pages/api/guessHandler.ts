@@ -3,7 +3,6 @@ import {shuffledCountries} from "@/misc/countries";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const guess = req.body
-    console.log(guess,country())
     if(guess === country()){
         res.status(200).json({correct:1})
         return

@@ -17,10 +17,12 @@ const Submit: FC<SubmitProps> = ({currentGuess,setCurrentGuess,handleGuess}) => 
                 id="country"
                 onChange={(guess) => guess ? setCurrentGuess(guess.value as string) : alert("Please select a country")}
                 options={countryArray.map((country) => ({value: country, label: country}))}
-                styles={{  control: (styles) => ({ ...styles, backgroundColor: "#9e75f0"}),
-                    singleValue: (styles) => ({ ...styles, color: "white"}),
-                    menuList: (styles) => ({...styles,backgroundColor: "#9e75f0",color:"white"}),
-                    placeholder: (styles) => ({...styles,color:"white"})}}
+                styles={{  control: (styles) => ({ ...styles, backgroundColor: "#9e75f0",fontSize:"larger"}),
+                    singleValue: (styles) => ({ ...styles, color: "white",}),
+                    menuList: (styles) => ({...styles,backgroundColor: "#9e75f0",color:"white",fontSize:"larger"}),
+                    placeholder: (styles) => ({...styles,color:"white"}),
+                    option: (styles) => ({...styles,":hover":{"backgroundColor":"white",color:"black"}})
+                }}
                 placeholder="Select an option"
             />
 
