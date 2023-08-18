@@ -24,6 +24,5 @@ function country(){
         countryDay = countryDay - 246
     }
 
-    const dailyCountry  = shuffledCountries[countryDay] as string
-    return dailyCountry
+    return shuffledCountries[countryDay] as string
 }

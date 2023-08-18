@@ -17,7 +17,6 @@ const Index: FC = () => {
     const [flag, setFlag] = useState<string>("")
     const { width, height } = useWindowSize()
     const [isComplete] = useTimeout(2000);
-    const CryptoJS = require('crypto-js');
 
     useEffect(() => {
         if (guesses.length >= 6) {

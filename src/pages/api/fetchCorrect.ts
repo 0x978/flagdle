@@ -24,10 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const flag = `https://flagcdn.com/w640/${dailyCountryCode.toLowerCase()}.png`
 
     if(req.body){
-        void logger("FINISHED GAME:",ip,dailyCountry,flag,[["GUESSES:",req.body]])
-    }
-    else{
-        void logger("VIEWED END SCREEN:",ip,dailyCountry,flag)
+        void logger("FINISHED GAME:",ip,dailyCountry,flag,[["GUESSES",req.body]])
     }
 
     res.status(200).json({"country":dailyCountry})
