@@ -21,7 +21,9 @@ const Submit: FC<SubmitProps> = ({currentGuess,setCurrentGuess,handleGuess}) => 
                     singleValue: (styles) => ({ ...styles, color: "white",}),
                     menuList: (styles) => ({...styles,backgroundColor: "#9e75f0",color:"white",fontSize:"larger"}),
                     placeholder: (styles) => ({...styles,color:"white"}),
-                    option: (styles) => ({...styles,":hover":{"backgroundColor":"white",color:"black"}})
+                    option: (styles,{isFocused,isSelected} ) =>
+                        ({...styles,backgroundColor: isSelected ? "#433151" : isFocused ? "#433151" : undefined,
+                        color:"white"})
                 }}
                 placeholder="Select an option"
             />
