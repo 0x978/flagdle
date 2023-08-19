@@ -16,7 +16,7 @@ const Index: FC = () => {
     const [guesses, setGuesses] = useState<guess[]>([])
     const [flag, setFlag] = useState<string>("")
     const { width, height } = useWindowSize()
-    const [isComplete] = useTimeout(2000);
+    const [isComplete] = useTimeout(4000);
 
     useEffect(() => {
         if (guesses.length >= 6) {
@@ -80,7 +80,6 @@ const Index: FC = () => {
     }
 
     async function handleGameOver(isCorrect: boolean,ans?:guess[]) {
-        console.log(ans?.map((guess) => guess.country).toString())
         const res = await fetch('/api/fetchCorrect', {
             method: 'POST',
             body: ans?.map((guess) => guess.country).toString()
