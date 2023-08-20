@@ -22,7 +22,7 @@ const Index: FC = () => {
         if (guesses.length >= 6) {
             memoryWriter(false)
             setIsGameActive(false)
-            handleGameOver(false)
+            void handleGameOver(false)
         }
     }, [guesses])
 

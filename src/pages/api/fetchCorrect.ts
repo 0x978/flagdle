@@ -25,20 +25,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if(req.body){
         console.log("=====================================GAME FINISH=====================================")
-        void logger("FINISHED GAME:",ip,dailyCountry,flag,[["GUESSES",req.body]])
+        void logger("FINISHED GAME:",[["CORRECT COUNTRY",dailyCountry],["FLAG",flag],["GUESSES",req.body]])
+        console.log("=====================================================================================")
     }
 
     res.status(200).json({"country":dailyCountry})
 }
 
-export async function logger(state:Capitalize<string>,IP: string,dailyCountry:string,flagURL:string,additionalArgs?: [Capitalize<string>, string][]) {
+export async function logger(state:Capitalize<string>,additionalArgs?: [Capitalize<string>, string][]) {
     try{
-        const res = await fetch(`https://ipapi.co/${IP}/json/`)
-        const data = await res.json()
-        const country = data.country_name
-        const city = data.city
-        const localTime = createTimeWithOffset(data.utc_offset)
-
         const dateTime = new Date().toLocaleDateString('en-gb', {
             weekday: "long",
             year: "numeric",
@@ -46,23 +41,25 @@ export async function logger(state:Capitalize<string>,IP: string,dailyCountry:st
             day: "numeric",
             hour: "numeric",
             minute: "numeric",
-            second: "numeric"
-        })
-
+            second: "numeric"})
+        const ipAddressArg = additionalArgs?.find((arg) => arg[0] === "IP");
+        if(ipAddressArg){
+            const res = await fetch(`https://ipapi.co/${ipAddressArg[1]}/json/`)
+            const data = await res.json()
+            const country = data.country_name
+            const city = data.city
+            const localTime = createTimeWithOffset(data.utc_offset)
+            additionalArgs?.push(["COUNTRY",country],["CITY",city],["LOCAL TIME",localTime])
+        }
         console.log(`-------------------------------------------------------
 ${state}:
-Location:${IP}, ${city}, ${country}
-gameCountry:${dailyCountry}
-flag:${flagURL}
+TIME:${dateTime}
 ${(additionalArgs ?? []).map(([key, value]) => `${key}: ${value}`).join('\n')}
-ON:${dateTime}
-LOCAL TIME:${localTime}
 `)
     }
     catch (e){
         console.log("------------------------------------------------------------------------------------------")
         console.log("LOGGING FAILED")
-        console.log(`IP: ${IP}`)
         console.log(e)
     }
 }

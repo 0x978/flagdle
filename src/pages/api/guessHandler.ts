@@ -10,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(200).json({correct:0})
 }
 
-function country(){
+export function country(){
     const start = new Date(Date.UTC(2023, 7, 17, 0, 0, 0)).getTime()
     const current = Date.now()
 
