@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const flag = `https://flagcdn.com/w640/${dailyCountryCode.toLowerCase()}.png`
 
-    await logger("CONNECTION",ip, dailyCountry, flag)
+    await logger("CONNECTION",[["IP",ip.toString()],["DAILY COUNTRY",dailyCountry],["FLAG URL",flag]])
 
     res.status(200).json({flag:flag})
 
