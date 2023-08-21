@@ -10,6 +10,7 @@ const config = {
         puddlePurple:"#433151",
         contrastingBlue:"#53caf5",
         fadedRed:"#c8464a",
+        pastelYellow:"#fce87f",
       }
     },
   },

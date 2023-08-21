@@ -21,7 +21,6 @@ const GuessBox: FC<GuessBoxProps> = ({country,isCorrect}) => {
                     <img src={flag} alt={`${country} Flag`} className="h-full w-full" />}
             </div>
             <h1 className="text-superCoolEdgyPurple text-lg">{country}</h1>
-
         </main>
 
     )

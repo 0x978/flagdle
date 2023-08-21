@@ -13,7 +13,7 @@ const Submit: FC<SubmitProps> = ({currentGuess,setCurrentGuess,handleGuess}) => 
     return(
         <main>
             <Select
-                className={"w-96"}
+                className={"w-96 px-2"}
                 id="country"
                 onChange={(guess) => guess ? setCurrentGuess(guess.value as string) : alert("Please select a country")}
                 options={countryArray.map((country) => ({value: country, label: country}))}
@@ -28,8 +28,8 @@ const Submit: FC<SubmitProps> = ({currentGuess,setCurrentGuess,handleGuess}) => 
                 placeholder="Select an option"
             />
 
-            <div className="mt-4">
-                <button className={"bg-superCoolEdgyPurple w-40 h-10 rounded-3xl text-white"} onClick={() => {
+            <div className="mt-4 px-2">
+                <button className={"bg-superCoolEdgyPurple w-full h-11 rounded-3xl text-white"} onClick={() => {
                     if (currentGuess) {
                         void handleGuess(currentGuess)
                     } else {

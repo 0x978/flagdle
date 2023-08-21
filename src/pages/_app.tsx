@@ -9,15 +9,17 @@ import {useEffect} from "react";
 const myFont = localFont({ src: "../misc/Web437_IBM_VGA_8x14.woff" })
 
 export default function App({ Component, pageProps }: AppProps) {
-    const router = useRouter();
+  const router = useRouter();
   useEffect(() => {
     router.events.on("routeChangeStart", () => NProgress.start());
     router.events.on("routeChangeComplete", () => NProgress.done());
     router.events.on("routeChangeError", () => NProgress.done());
   }, []);
+
   return (
-      <main className={myFont.className}>
+      <main className={`${myFont.className}`}>
           <Component {...pageProps} />
       </main>
   );
 }
+

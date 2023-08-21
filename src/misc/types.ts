@@ -10,3 +10,8 @@ export interface CountryCodeMap {
 }
 
 export type CountryCodeKeys = keyof typeof countryCodeMap;
+
+export interface factObject{
+    factType:string
+    factString:string
+}

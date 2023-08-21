@@ -1,11 +1,12 @@
 import {FC, useEffect, useState} from "react"
 import GuessBoxes from "@/components/guessBoxes";
 import Head from 'next/head'
-import {guess} from "@/misc/types";
+import {factObject, guess} from "@/misc/types";
 import Submit from "@/components/submit";
 import Confetti from 'react-confetti';
 import {useTimeout, useWindowSize} from 'react-use';
 import Swal from "sweetalert2"
+import ClueBoxes from "@/components/clueBoxes";
 
 
 
@@ -15,6 +16,8 @@ const Index: FC = () => {
     const [currentGuess, setCurrentGuess] = useState<string>()
     const [guesses, setGuesses] = useState<guess[]>([])
     const [flag, setFlag] = useState<string>("")
+    const [facts,setFacts] = useState<factObject[]>([])
+    const [displayClues,setDisplayClues] = useState<boolean>(false)
     const { width, height } = useWindowSize()
     const [isComplete] = useTimeout(4000);
 
@@ -30,7 +33,6 @@ const Index: FC = () => {
         async function fetchFlag() {
             const res = await fetch("/api/fetchDailyFlag")
             const data = await res.json()
-            console.log(data)
             if (data.flag) {
                 setFlag(data.flag)
             } else {
@@ -53,7 +55,17 @@ const Index: FC = () => {
     async function handleGuess(guess: string) {
 
         if (guesses.some((ans) => guess === ans.country)) {
-            alert("Already guessed")
+            void Swal.fire({
+                title:"Already Guessed",
+                text:"You have already guessed this answer, try again!",
+                icon:"warning",
+                toast:true,
+                position:"top",
+                background: "#433151",
+                color: "#9e75f0",
+                showConfirmButton: false,
+                timer:2000,
+            })
             return
         }
         const res = await fetch('/api/guessHandler', {
@@ -76,6 +88,10 @@ const Index: FC = () => {
             setIsGameActive(false)
             memoryWriter(true)
             void handleGameOver(true,[...guesses,{country:guess,correct:true}])
+        }
+        else if(guesses.length+1 < 6){
+            const fact = await getFact(guesses.length+1)
+            setFacts(prevState => [...prevState,fact])
         }
     }
 
@@ -131,6 +147,15 @@ const Index: FC = () => {
         return localStorage.getItem(today)
     }
 
+    async function getFact(guessNumber:number){
+        const res = await fetch('/api/dailyFacts', {
+            method: 'POST',
+            body: guessNumber.toString()
+        })
+        const data = await res.json();
+        return data.factData
+    }
+
     return (
         <>
             {isUserCorrect && <Confetti width={width} height={height} recycle={!isComplete()}/>}
@@ -141,8 +166,8 @@ const Index: FC = () => {
                 <link rel="icon" href="/favicon.ico"/>
             </Head>
 
-            <main className="h-screen flex justify-center text-center bg-deepPurple">
-                <div className="flex flex-col items-center my-3 space-y-2">
+            <main className="min-h-screen flex flex-col items-center text-center ">
+                <div className="flex flex-col items-center my-3 space-y-4">
                     <h1 className="text-5xl text-superCoolEdgyPurple">Flag Daily game thing</h1>
                     <img
                         className="w-96"
@@ -153,7 +178,16 @@ const Index: FC = () => {
                     {isGameActive && <Submit currentGuess={currentGuess} setCurrentGuess={setCurrentGuess}
                                              handleGuess={handleGuess}/>}
 
-                    {guesses.length > 0 && <GuessBoxes guesses={guesses}/>}
+                    {guesses.length > 0 &&
+                        <button className={`${!displayClues ? `bg-pastelYellow` : `bg-superCoolEdgyPurple`} text-black w-44 h-11 rounded-3xl`}
+                                onClick={() => setDisplayClues(prevState => !prevState)} >{displayClues ? "Display Guesses" : "Display Clues"}</button>
+                    }
+
+                    {!displayClues ?
+                        guesses.length > 0 && <GuessBoxes guesses={guesses}/>
+                        :
+                        <ClueBoxes clues={facts}/>
+                    }
 
                 </div>
             </main>
