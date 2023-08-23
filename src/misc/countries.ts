@@ -154,7 +154,6 @@ export const countryCodeMap:CountryCodeMap = {
     "Nauru": 'NR',
     "Nepal": 'NP',
     "Netherlands": 'NL',
-    'Netherlands Antilles': 'AN',
     'New Caledonia': 'NC',
     'New Zealand': 'NZ',
     "Nicaragua": 'NI',
