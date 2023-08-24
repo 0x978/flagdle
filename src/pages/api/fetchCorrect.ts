@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if(req.body){
         console.log("=====================================GAME FINISH=====================================")
-        void logger("FINISHED GAME:",[["CORRECT COUNTRY",dailyCountry],["FLAG",flag],["GUESSES",req.body]])
+        void logger("FINISHED GAME:",[["CORRECT COUNTRY",dailyCountry],["FLAG",flag],["GUESSES",req.body],["IP",ip]])
         console.log("=====================================================================================")
     }
 
