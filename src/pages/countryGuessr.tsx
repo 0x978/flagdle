@@ -14,13 +14,13 @@ interface CountryGuessrProps {
 
 const CountryGuessr: FC<CountryGuessrProps> = ({}) => {
     const [isGameActive, setIsGameActive] = useState<boolean>(true)
-    const [isUserCorrect,setIsUserCorrect] = useState<boolean>(false)
+    const [isUserCorrect, setIsUserCorrect] = useState<boolean>(false)
     const [currentGuess, setCurrentGuess] = useState<string>()
     const [guesses, setGuesses] = useState<guess[]>([])
     const [country, setCountry] = useState<string>("")
-    const [facts,setFacts] = useState<factObject[]>([])
-    const [displayClues,setDisplayClues] = useState<boolean>(false)
-    const { width, height } = useWindowSize()
+    const [facts, setFacts] = useState<factObject[]>([])
+    const [displayClues, setDisplayClues] = useState<boolean>(false)
+    const {width, height} = useWindowSize()
     const [isComplete] = useTimeout(4000);
 
     useEffect(() => {
@@ -32,23 +32,22 @@ const CountryGuessr: FC<CountryGuessrProps> = ({}) => {
     }, [guesses])
 
     useEffect(() => {
-        async function fetchFlag() {
-            const res = await fetch("/api/fetchDailyFlag")
+        async function fetchCountry() {
+            const res = await fetch("/api/countryGuessr/fetchDailyCountry")
             const data = await res.json()
-            if (data.flag) {
-                setCountry(data.flag)
+            if (data.country) {
+                setCountry(data.country)
             } else {
-                alert("Error fetching flag")
+                alert("Error fetching Country")
             }
         }
 
-        void fetchFlag()
+        void fetchCountry()
         const isPlayed = isPlayedToday()
-        if(isPlayed !== null){
-            if(isPlayed === "true"){
+        if (isPlayed !== null) {
+            if (isPlayed === "true") {
                 void handleGameOver(true)
-            }
-            else{
+            } else {
                 void handleGameOver(false)
             }
         }
@@ -58,19 +57,19 @@ const CountryGuessr: FC<CountryGuessrProps> = ({}) => {
 
         if (guesses.some((ans) => guess === ans.country)) {
             void Swal.fire({
-                title:"Already Guessed",
-                text:"You have already guessed this answer, try again!",
-                icon:"warning",
-                toast:true,
-                position:"top",
+                title: "Already Guessed",
+                text: "You have already guessed this answer, try again!",
+                icon: "warning",
+                toast: true,
+                position: "top",
                 background: "#433151",
                 color: "#9e75f0",
                 showConfirmButton: false,
-                timer:2000,
+                timer: 2000,
             })
             return
         }
-        const res = await fetch('/api/guessHandler', {
+        const res = await fetch('/api/countryGuessr/guessHandler', {
             method: 'POST',
             body: guess
         })
@@ -89,68 +88,49 @@ const CountryGuessr: FC<CountryGuessrProps> = ({}) => {
             setIsUserCorrect(true)
             setIsGameActive(false)
             memoryWriter(true)
-            void handleGameOver(true,[...guesses,{country:guess,correct:true}])
-        }
-        else if(guesses.length+1 < 6){
-            const fact = await getFact(guesses.length+1)
-            setFacts(prevState => [...prevState,fact])
+            void handleGameOver(true, [...guesses, {country: guess, correct: true}])
+        } else if (guesses.length + 1 < 6) {
+            const fact = await getFact(guesses.length + 1)
+            setFacts(prevState => [...prevState, fact])
         }
     }
 
-    async function handleGameOver(isCorrect: boolean,ans?:guess[]) {
-        const res = await fetch('/api/fetchCorrect', {
+    async function handleGameOver(isCorrect: boolean, ans?: guess[]) {
+        const res = await fetch('/api/countryGuessr/fetchCorrect', {
             method: 'POST',
             body: ans?.map((guess) => guess.country).toString()
         })
         const data = await res.json();
         const correct = data.country
 
-        if (isCorrect) {
-            void Swal.fire({
-                title: "Congratulations!",
-                html: `<div style='display:flex; flex-direction: column; row-gap: 20px;'> 
-            <h1 style='font-size: larger'>You got the correct answer in <span style='color: #77DD77'>${guesses.length +1}</span> guess!</h1>
+        void Swal.fire({
+            title: isCorrect ? "Congratulations!" : "Unlucky!",
+            html: `<div style='display:flex; flex-direction: column; row-gap: 20px;'> 
+            <h1 style='font-size: larger'>${isCorrect ? `You got the correct answer in <span style='color: #77DD77'>${guesses.length + 1}</span> guess!` : `You did not get the answer this time!`}</h1>
             <h1 style='font-size: larger'>The correct answer was: <span style='color: #77DD77'>${correct}</span></h1>
-            <h1 style='font-size: larger'>A new flag is available at <span style='color: #53caf5'>12:00 AM UTC</span></h1>
+            <h1 style='font-size: larger'>A new game is available at <span style='color: #53caf5'>12:00 AM UTC</span></h1>
           </div>`,
-                icon: "success",
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                showConfirmButton: false,
-                background: "#433151",
-                color: "#9e75f0",
-            });
-
-        } else {
-            void Swal.fire({
-                title: "Unlucky!",
-                icon: "error",
-                html: `<div style='display:flex; flex-direction: column; row-gap: 20px;'> 
-                    <h1 style='font-size: larger' >You did not get the flag this time!</h1>
-                    <h1 style='font-size: larger'>The correct answer was: <span style='color: #77DD77'>${correct}</span></h1>
-                    <h1 style='font-size: larger'>A new flag is available at <span style='color: #53caf5'>12:00 AM UTC</span></h1>
-                    </div>`,
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                showConfirmButton: false,
-                background: "#433151",
-                color: "#9e75f0",
-            })
-        }
+            icon: isCorrect ? "success" : "error",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            background: "#433151",
+            color: "#9e75f0",
+        });
     }
 
-    function memoryWriter(isCorrect:boolean){
+    function memoryWriter(isCorrect: boolean) {
         const today = new Date().toISOString().split('T')[0];
-        localStorage.setItem(today,String(isCorrect))
+        localStorage.setItem(`C-${today}`, String(isCorrect))
     }
 
-    function isPlayedToday(){
+    function isPlayedToday() {
         const today = new Date().toISOString().split('T')[0];
-        return localStorage.getItem(today)
+        return localStorage.getItem(`C-${today}`)
     }
 
-    async function getFact(guessNumber:number){
-        const res = await fetch('/api/dailyFacts', {
+    async function getFact(guessNumber: number) {
+        const res = await fetch('/api/countryGuessr/fetchFact', {
             method: 'POST',
             body: guessNumber.toString()
         })
@@ -158,7 +138,7 @@ const CountryGuessr: FC<CountryGuessrProps> = ({}) => {
         return data.factData
     }
 
-    return(
+    return (
         <>
             {isUserCorrect && <Confetti width={width} height={height} recycle={!isComplete()}/>}
             <Head>
@@ -173,16 +153,16 @@ const CountryGuessr: FC<CountryGuessrProps> = ({}) => {
                     <h1 className="text-5xl text-superCoolEdgyPurple">CountryGuessr</h1>
                     <img
                         className="w-96"
-                        src="../components/countryOutlines/ad.svg"
-                        alt="The daily Counry"
+                        src={country}
+                        alt="The daily Country"
                     />
-
                     {isGameActive && <Submit currentGuess={currentGuess} setCurrentGuess={setCurrentGuess}
                                              handleGuess={handleGuess}/>}
 
                     {guesses.length > 0 &&
-                        <button className={`${!displayClues ? `bg-pastelYellow` : `bg-superCoolEdgyPurple`} text-black w-44 h-11 rounded-3xl`}
-                                onClick={() => setDisplayClues(prevState => !prevState)} >{displayClues ? "Display Guesses" : "Display Clues"}</button>
+                        <button
+                            className={`${!displayClues ? `bg-pastelYellow` : `bg-superCoolEdgyPurple`} text-black w-44 h-11 rounded-3xl`}
+                            onClick={() => setDisplayClues(prevState => !prevState)}>{displayClues ? "Display Guesses" : "Display Clues"}</button>
                     }
 
                     {!displayClues ?
