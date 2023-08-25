@@ -1,6 +1,5 @@
 import {FC} from "react"
 import GuessBox from "@/components/guessBox";
-import {nanoid} from "nanoid";
 import {guess} from "@/misc/types";
 
 interface GuessBoxesProps {

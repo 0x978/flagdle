@@ -23,14 +23,6 @@ const Index: FC = () => {
     const router = useRouter()
 
     useEffect(() => {
-        if (guesses.length >= 6) {
-            memoryWriter(false)
-            setIsGameActive(false)
-            void handleGameOver(false)
-        }
-    }, [guesses])
-
-    useEffect(() => {
         async function fetchFlag() {
             const res = await fetch("/api/fetchDailyFlag")
             const data = await res.json()
@@ -58,6 +50,11 @@ const Index: FC = () => {
                 setIsUserCorrect(true)
                 setIsGameActive(false)
                 memoryWriter(true,true)
+            }
+            if (!isCorrect && guesses.length >= 6) {
+                setIsGameActive(false)
+                memoryWriter(false,false)
+                void handleGameOver(false,"/api/fetchCorrect")
             }
         })
     }

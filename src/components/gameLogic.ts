@@ -1,6 +1,5 @@
 import Swal from "sweetalert2";
 import {factObject, guess} from "@/misc/types";
-import {useRouter} from "next/router";
 
 export const guesses:guess[] = []
 
