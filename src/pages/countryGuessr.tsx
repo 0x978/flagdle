@@ -53,48 +53,6 @@ const CountryGuessr: FC<CountryGuessrProps> = ({}) => {
         }
     }, [])
 
-    async function handleGuess(guess: string) {
-
-        if (guesses.some((ans) => guess === ans.country)) {
-            void Swal.fire({
-                title: "Already Guessed",
-                text: "You have already guessed this answer, try again!",
-                icon: "warning",
-                toast: true,
-                position: "top",
-                background: "#433151",
-                color: "#9e75f0",
-                showConfirmButton: false,
-                timer: 2000,
-            })
-            return
-        }
-        const res = await fetch('/api/countryGuessr/guessHandler', {
-            method: 'POST',
-            body: guess
-        })
-
-        const data = await res.json();
-        const correct: boolean = data.correct
-        const newGuess = {
-            country: guess,
-            correct: correct,
-        }
-
-        setGuesses((prevState) => {
-            return [...prevState, newGuess]
-        })
-        if (correct) {
-            setIsUserCorrect(true)
-            setIsGameActive(false)
-            memoryWriter(true)
-            void handleGameOver(true, [...guesses, {country: guess, correct: true}])
-        } else if (guesses.length + 1 < 6) {
-            const fact = await getFact(guesses.length + 1)
-            setFacts(prevState => [...prevState, fact])
-        }
-    }
-
     async function handleGameOver(isCorrect: boolean, ans?: guess[]) {
         const res = await fetch('/api/countryGuessr/fetchCorrect', {
             method: 'POST',

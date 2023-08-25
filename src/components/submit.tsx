@@ -31,7 +31,7 @@ const Submit: FC<SubmitProps> = ({currentGuess,setCurrentGuess,handleGuess}) => 
             <div className="mt-4 px-2">
                 <button className={"bg-superCoolEdgyPurple w-full h-11 rounded-3xl text-white"} onClick={() => {
                     if (currentGuess) {
-                        void handleGuess(currentGuess)
+                        handleGuess(currentGuess)
                     } else {
                         alert("Please select a guess")
                     }
