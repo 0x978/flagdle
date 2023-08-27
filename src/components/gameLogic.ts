@@ -35,7 +35,7 @@ export async function handleGuess(guess: string, verifyAnswerAPI: string, correc
     guesses.push(newGuess)
 
     if (correct) {
-        void handleGameOver(true, correctAnswerAPI, guesses)
+        void handleGameOver(true, correctAnswerAPI, guesses.length,guesses)
     } else if (guesses.length + 1 < 6) {
         const fact = await getFact(guesses.length + 1, factAPI)
         setFacts(prevState => [...prevState, fact])
@@ -58,9 +58,8 @@ export function isPlayedToday(isFlagGuessr: boolean) {
     return isFlagGuessr ? localStorage.getItem(today) : localStorage.getItem(`C-${today}`)
 }
 
-export async function handleGameOver(isCorrect: boolean, apiRoute: string, ans?: guess[]) {
+export async function handleGameOver(isCorrect: boolean, apiRoute: string,numberOfGuesses:number, ans?: guess[]) {
     const isFlagGuessr = apiRoute.slice(5) === "fetchCorrect"
-    console.log( apiRoute.slice(5))
 
     const res = await fetch(apiRoute, {
         method: 'POST',
@@ -73,12 +72,12 @@ export async function handleGameOver(isCorrect: boolean, apiRoute: string, ans?:
         title: isCorrect ? "Congratulations!" : "Unlucky",
         icon: isCorrect ? "success" : "error",
         html: `<div style='display:flex; flex-direction: column; row-gap: 20px;'> 
-                    <h1 style='font-size: larger' >${isCorrect ? `You got the correct answer in <span style='color: #77DD77'>${ans?.length}</span> guesses!`
+                    <h1 style='font-size: larger' >${isCorrect ? `You got the correct answer in <span style='color: #77DD77'>${numberOfGuesses}</span> guesses!`
             : "You did not get the flag this time!"}
                     </h1>
                     <h1 style='font-size: larger'>The correct answer was: <span style='color: #77DD77'>${correct}</span></h1>
                     <h1 style='font-size: larger'>A new flag is available at <span style='color: #53caf5'>12:00 AM UTC</span></h1>
-                    <h1 style='font-size: larger'>${isFlagGuessr ? `Try to beat today's CountryGuessr?` : '' }</h1>
+                    <h1 style='font-size: larger'>${isFlagGuessr ? `Why not try to beat today's CountryGuessr?` : '' }</h1>
                     </div>`,
         allowOutsideClick: false,
         allowEscapeKey: false,
@@ -91,7 +90,8 @@ export async function handleGameOver(isCorrect: boolean, apiRoute: string, ans?:
     })
 }
 
-export function memoryWriter(isCorrect: boolean, isFlagGuessr: boolean) {
+export function memoryWriter(isCorrect: boolean, isFlagGuessr: boolean,numberOfGuesses:number) {
+    const data:string[] = [String(isCorrect),numberOfGuesses.toString()]
     const today = new Date().toISOString().split('T')[0];
-    isFlagGuessr ? localStorage.setItem(today, String(isCorrect)) : localStorage.setItem(`C-${today}`, String(isCorrect))
+    isFlagGuessr ? localStorage.setItem(today, JSON.stringify(data)) : localStorage.setItem(`C-${today}`, JSON.stringify(data))
 }

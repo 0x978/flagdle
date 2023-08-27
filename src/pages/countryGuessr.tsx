@@ -38,10 +38,11 @@ const CountryGuessr: FC<CountryGuessrProps> = ({}) => {
         void fetchCountry()
         const isPlayed = isPlayedToday(false)
         if (isPlayed !== null) {
-            if (isPlayed === "true") {
-                void handleGameOver(true,"/api/countryGuessr/fetchCorrect/")
+            const stats:[boolean,number] = JSON.parse(isPlayed)
+            if (stats[0]) {
+                void handleGameOver(true, "/api/countryGuessr/fetchCorrect",stats[1])
             } else {
-                void handleGameOver(false,"/api/countryGuessr/fetchCorrect/")
+                void handleGameOver(false, "/api/countryGuessr/fetchCorrect",stats[1])
             }
         }
     }, [])
@@ -52,12 +53,12 @@ const CountryGuessr: FC<CountryGuessrProps> = ({}) => {
                 if (isCorrect) {
                     setIsUserCorrect(true)
                     setIsGameActive(false)
-                    memoryWriter(true, false)
+                    memoryWriter(true, false,guesses.length)
                 }
                 if (!isCorrect && guesses.length >= 6) {
                     setIsGameActive(false)
-                    memoryWriter(false,false)
-                    void handleGameOver(false,"/api/countryGuessr/fetchCorrect/")
+                    memoryWriter(false,false,guesses.length)
+                    void handleGameOver(false,"/api/countryGuessr/fetchCorrect/",guesses.length)
                 }
             })
     }
