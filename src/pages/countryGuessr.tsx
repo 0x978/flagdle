@@ -6,7 +6,7 @@ import GuessBoxes from "@/components/guessBoxes";
 import ClueBoxes from "@/components/clueBoxes";
 import {factObject, guess} from "@/misc/types";
 import {useTimeout, useWindowSize} from "react-use";
-import {guesses, handleGameOver, handleGuess, isPlayedToday, memoryWriter} from "@/components/gameLogic";
+import {handleGameOver, handleGuess, isPlayedToday, memoryWriter} from "@/components/gameLogic";
 
 interface CountryGuessrProps {
 
@@ -15,11 +15,13 @@ interface CountryGuessrProps {
 const CountryGuessr: FC<CountryGuessrProps> = ({}) => {
     const [isGameActive, setIsGameActive] = useState<boolean>(true)
     const [isUserCorrect, setIsUserCorrect] = useState<boolean>(false)
-    const [currentGuess, setCurrentGuess] = useState<string>()
+    const [currentGuess, setCurrentGuess] = useState<string>("")
     const [country, setCountry] = useState<string>("")
     const [facts, setFacts] = useState<factObject[]>([])
     const [displayClues, setDisplayClues] = useState<boolean>(false)
     const {width, height} = useWindowSize()
+    const [guesses,setGuesses] = useState<guess[]>([])
+
     const [isComplete] = useTimeout(4000);
 
     useEffect(() => {
@@ -45,7 +47,7 @@ const CountryGuessr: FC<CountryGuessrProps> = ({}) => {
     }, [])
 
     function guesser() {
-        handleGuess(currentGuess, "/api/countryGuessr/guessHandler/", "/api/countryGuessr/fetchCorrect/", "/api/countryGuessr/fetchFact", setFacts)
+        handleGuess(currentGuess, "/api/countryGuessr/guessHandler/", "/api/countryGuessr/fetchCorrect/", "/api/countryGuessr/fetchFact", setFacts,guesses,setGuesses)
             .then((isCorrect) => {
                 if (isCorrect) {
                     setIsUserCorrect(true)

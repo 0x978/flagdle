@@ -5,19 +5,19 @@ import {factObject, guess} from "@/misc/types";
 import Submit from "@/components/submit";
 import Confetti from 'react-confetti';
 import {useTimeout, useWindowSize} from 'react-use';
-import Swal from "sweetalert2"
 import ClueBoxes from "@/components/clueBoxes";
 import {useRouter} from "next/router";
-import {guesses, handleGameOver, handleGuess, isPlayedToday, memoryWriter} from "@/components/gameLogic";
+import {handleGameOver, handleGuess, isPlayedToday, memoryWriter} from "@/components/gameLogic";
 
 
 const Index: FC = () => {
     const [isGameActive, setIsGameActive] = useState<boolean>(true)
     const [isUserCorrect, setIsUserCorrect] = useState<boolean>(false)
-    const [currentGuess, setCurrentGuess] = useState<string>()
+    const [currentGuess, setCurrentGuess] = useState<string>("")
     const [flag, setFlag] = useState<string>("")
     const [facts, setFacts] = useState<factObject[]>([])
     const [displayClues, setDisplayClues] = useState<boolean>(false)
+    const [guesses, setGuesses] = useState<guess[]>([])
     const {width, height} = useWindowSize()
     const [confettiIsComplete] = useTimeout(4000);
     const router = useRouter()
@@ -37,26 +37,27 @@ const Index: FC = () => {
         const isPlayed = isPlayedToday(true)
         if (isPlayed !== null) {
             if (isPlayed === "true") { // is "true" (string as its local storage) if the user was correct.
-                void handleGameOver(true,"/api/fetchCorrect")
+                void handleGameOver(true, "/api/fetchCorrect")
             } else {
-                void handleGameOver(false,"/api/fetchCorrect")
+                void handleGameOver(false, "/api/fetchCorrect")
             }
         }
     }, [])
 
-    function guesser(){
-        handleGuess(currentGuess,"/api/guessHandler","/api/fetchCorrect","/api/dailyFacts",setFacts).then((isCorrect) => {
-            if(isCorrect){
-                setIsUserCorrect(true)
-                setIsGameActive(false)
-                memoryWriter(true,true)
-            }
-            if (!isCorrect && guesses.length >= 6) {
-                setIsGameActive(false)
-                memoryWriter(false,false)
-                void handleGameOver(false,"/api/fetchCorrect")
-            }
-        })
+    function guesser() {
+        handleGuess(currentGuess, "/api/guessHandler", "/api/fetchCorrect", "/api/dailyFacts", setFacts, guesses, setGuesses)
+            .then((isCorrect) => {
+                if (isCorrect) {
+                    setIsUserCorrect(true)
+                    setIsGameActive(false)
+                    memoryWriter(true, true)
+                }
+                if (!isCorrect && guesses.length >= 6) {
+                    setIsGameActive(false)
+                    memoryWriter(false, false)
+                    void handleGameOver(false, "/api/fetchCorrect")
+                }
+            })
     }
 
 
