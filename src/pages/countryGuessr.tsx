@@ -55,7 +55,7 @@ const CountryGuessr: FC<CountryGuessrProps> = ({}) => {
                     setIsGameActive(false)
                     memoryWriter(true, false,guesses.length)
                 }
-                if (!isCorrect && guesses.length >= 6) {
+                if (!isCorrect && guesses.length+1 === 6) {
                     setIsGameActive(false)
                     memoryWriter(false,false,guesses.length)
                     void handleGameOver(false,"/api/countryGuessr/fetchCorrect/",guesses.length)

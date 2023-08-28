@@ -51,9 +51,9 @@ const Index: FC = () => {
                     setIsGameActive(false)
                     memoryWriter(true, true,guesses.length)
                 }
-                if (!isCorrect && guesses.length === 6) {
+                if (!isCorrect && guesses.length+1 === 6) {
                     setIsGameActive(false)
-                    memoryWriter(false, false,guesses.length)
+                    memoryWriter(false, true,guesses.length)
                     void handleGameOver(false, "/api/fetchCorrect",guesses.length)
                 }
             })
