@@ -32,7 +32,7 @@ export async function handleGuess(guess: string, verifyAnswerAPI: string, correc
         correct: correct,
     }
 
-    guesses.push(newGuess)
+    setGuesses(prevState => [...prevState,newGuess])
 
     if (correct) {
         void handleGameOver(true, correctAnswerAPI, guesses.length,guesses)

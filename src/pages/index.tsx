@@ -6,7 +6,6 @@ import Submit from "@/components/submit";
 import Confetti from 'react-confetti';
 import {useTimeout, useWindowSize} from 'react-use';
 import ClueBoxes from "@/components/clueBoxes";
-import {useRouter} from "next/router";
 import {handleGameOver, handleGuess, isPlayedToday, memoryWriter} from "@/components/gameLogic";
 
 
@@ -20,7 +19,6 @@ const Index: FC = () => {
     const [guesses, setGuesses] = useState<guess[]>([])
     const {width, height} = useWindowSize()
     const [confettiIsComplete] = useTimeout(4000);
-    const router = useRouter()
 
     useEffect(() => {
         async function fetchFlag() {

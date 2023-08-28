@@ -1,5 +1,4 @@
 import {FC} from "react"
-import GuessBox from "@/components/guessBox";
 import {factObject} from "@/misc/types";
 import Clue from "@/components/Clue";
 import {nanoid} from "nanoid";
