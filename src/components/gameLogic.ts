@@ -36,7 +36,7 @@ export async function handleGuess(guess: string, verifyAnswerAPI: string, correc
 
     if (correct) {
         void handleGameOver(true, correctAnswerAPI, guesses.length,guesses)
-    } else if (guesses.length + 1 < 6) {
+    } else if (guesses.length < 6) {
         const fact = await getFact(guesses.length + 1, factAPI)
         setFacts(prevState => [...prevState, fact])
     }
