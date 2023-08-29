@@ -1,12 +1,12 @@
 import {NextApiRequest, NextApiResponse} from "next";
-import {logger} from "@/pages/api/fetchCorrect";
-import {fetchDailyCountryName} from "@/pages/api/countryGuessr/fetchDailyCountry";
+import logger from "@/components/api/logger";
+import {getCountryName} from "@/components/api/fetchGenericCountry";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     const ip = req.headers["x-real-ip"] as string; // Header is set up on NGINX reverse proxy config
 
-    const dailyCountry = fetchDailyCountryName()
+    const dailyCountry = getCountryName("country")
 
     if(req.body){
         console.log("=====================================COUNTRY GAME FINISH=====================================")

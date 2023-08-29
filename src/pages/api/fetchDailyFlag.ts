@@ -1,31 +1,25 @@
 import {NextApiRequest, NextApiResponse} from "next";
-import {countryCodeMap, shuffledCountries} from "@/misc/countries";
-import {logger} from "@/pages/api/fetchCorrect";
+import logger from "@/components/api/logger";
+import fetchGenericCountry from "@/components/api/fetchGenericCountry";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const ip = req.headers["x-real-ip"] as string; // Header is set up on NGINX reverse proxy config
 
-    const start = new Date(Date.UTC(2023, 7, 17, 0, 0, 0)).getTime()
-    const current = Date.now()
+    const flagObj = await fetchGenericCountry("flag")
 
-    const timeDifference = Math.abs(current - start);
-
-    const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
-
-    let countryDay = Math.floor(daysDifference)
-
-    if(countryDay > 246){
-        countryDay = countryDay - 246
+    if(!flagObj){
+        res.status(404)
+        return
     }
 
-    const dailyCountry  = shuffledCountries[countryDay] as string
+    if(!flagObj.flag){
+        res.status(404).json({"error":"Flag not fetched"})
+        return
+    }
 
-    const dailyCountryCode = countryCodeMap[dailyCountry]
+    await logger("CONNECTION",[["IP",ip],["DAILY COUNTRY",flagObj.country],["FLAG URL",flagObj.flag]])
 
-    const flag = `https://flagcdn.com/w640/${dailyCountryCode.toLowerCase()}.png`
 
-    await logger("CONNECTION",[["IP",ip],["DAILY COUNTRY",dailyCountry],["FLAG URL",flag]])
-
-    res.status(200).json({flag:flag})
+    res.status(200).json({flag:flagObj.flag})
 
 }

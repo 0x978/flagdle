@@ -91,7 +91,7 @@ export async function handleGameOver(isCorrect: boolean, apiRoute: string,number
 }
 
 export function memoryWriter(isCorrect: boolean, isFlagGuessr: boolean,numberOfGuesses:number) {
-    const data:string[] = [String(isCorrect),numberOfGuesses.toString()]
+    const data:string[] = [String(isCorrect),(numberOfGuesses+1).toString()]
     const today = new Date().toISOString().split('T')[0];
     isFlagGuessr ? localStorage.setItem(today, JSON.stringify(data)) : localStorage.setItem(`C-${today}`, JSON.stringify(data))
 }

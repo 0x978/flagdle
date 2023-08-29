@@ -14,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 }
 
 function findMissingOutlines(){
-    const outlineDir = "./src/components/countryOutlines"
+    const outlineDir = "./public/countryOutlines"
     const files:string[] = fs.readdirSync(outlineDir).map((filename:string) => filename.slice(0,2).toUpperCase())
 
     const countryCodeArr = Object.values(countryCodeMap)

@@ -49,12 +49,12 @@ const Index: FC = () => {
                 if (isCorrect) {
                     setIsUserCorrect(true)
                     setIsGameActive(false)
-                    memoryWriter(true, true,guesses.length)
+                    memoryWriter(true, true,guesses.length+1)
                 }
                 if (!isCorrect && guesses.length+1 === 6) {
                     setIsGameActive(false)
                     memoryWriter(false, true,guesses.length)
-                    void handleGameOver(false, "/api/fetchCorrect",guesses.length)
+                    void handleGameOver(false, "/api/fetchCorrect",guesses.length+1)
                 }
             })
     }

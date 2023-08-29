@@ -15,3 +15,12 @@ export interface factObject{
     factType:string
     factString:string
 }
+
+export interface countryFacts{
+    population:string,
+    continent:string,
+    capital:string,
+    region:string,
+    language:string,
+    isLandLocked:string,
+}
