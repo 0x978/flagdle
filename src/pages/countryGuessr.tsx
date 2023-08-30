@@ -58,7 +58,7 @@ const CountryGuessr: FC<CountryGuessrProps> = ({}) => {
                 if (!isCorrect && guesses.length+1 === 6) {
                     setIsGameActive(false)
                     memoryWriter(false,false,guesses.length)
-                    void handleGameOver(false,"/api/countryGuessr/fetchCorrect/",guesses.length+1)
+                    void handleGameOver(false,"/api/countryGuessr/fetchCorrect",guesses.length+1)
                 }
             })
     }
@@ -76,11 +76,14 @@ const CountryGuessr: FC<CountryGuessrProps> = ({}) => {
             <main className="min-h-screen flex flex-col items-center text-center ">
                 <div className="flex flex-col items-center my-3 space-y-4">
                     <h1 className="text-5xl text-superCoolEdgyPurple">CountryGuessr</h1>
-                    <img
-                        className="w-96"
-                        src={country}
-                        alt="The daily Country"
-                    />
+
+                    <div className={"bg-gray-300 w-full h-full"}>
+                        <img
+                            className="w-96"
+                            src={country}
+                            alt="The daily Country"
+                        />
+                    </div>
                     {isGameActive && <Submit currentGuess={currentGuess} setCurrentGuess={setCurrentGuess}
                                              handleGuess={guesser}/>}
 

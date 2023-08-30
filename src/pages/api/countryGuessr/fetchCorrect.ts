@@ -8,6 +8,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const dailyCountry = getCountryName("country")
 
+    console.log(dailyCountry)
+
     if(req.body){
         console.log("=====================================COUNTRY GAME FINISH=====================================")
         void logger("FINISHED GAME:",[["CORRECT COUNTRY",dailyCountry],["Country",dailyCountry],["GUESSES",req.body],["IP",ip]])

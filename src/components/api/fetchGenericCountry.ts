@@ -2,7 +2,7 @@ import {countryCodeMap, invertedCountryCodeMap, shuffleArray, shuffledCountries}
 import fs from "fs";
 
 export let startDay = new Date(Date.UTC(2023, 7, 24, 0, 0, 0)).getTime()
-const dailyCountryArray:string[] = shuffleArray(fs.readdirSync("public/countryOutlines").map((filename:string) => filename),42) // Array containing shuffled country outlines
+export const dailyCountryArray:string[] = shuffleArray(fs.readdirSync("public/countryOutlines").map((filename:string) => filename),42) // Array containing shuffled country outlines
 const outlineDir = "public/countryOutlines"
 
 const index = getIndex()
@@ -40,7 +40,7 @@ function isRestart(){
 
     const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
 
-    return daysDifference === 241;
+    return daysDifference === 240;
 
 }
 
@@ -50,7 +50,6 @@ export function getCountryName(gamemode:string){
             return shuffledCountries[index] as string
         case "country":
             const countryFile = dailyCountryArray[index]
-            console.log(countryFile.slice(0,2).toUpperCase())
             return invertedCountryCodeMap[countryFile.slice(0,2).toUpperCase()]
         default:
             throw new Error("Invalid gamemode")
