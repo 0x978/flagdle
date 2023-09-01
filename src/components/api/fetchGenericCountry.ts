@@ -1,12 +1,14 @@
-import {countryCodeMap, invertedCountryCodeMap, shuffleArray, shuffledCountries} from "@/misc/countries";
+import {countryArray, countryCodeMap, invertedCountryCodeMap, shuffleArray, shuffledCountries} from "@/misc/countries";
 import fs from "fs";
 
+const clueGuessrCountries = shuffleArray(countryArray,45)
 export let startDay = new Date(Date.UTC(2023, 7, 24, 0, 0, 0)).getTime()
 export const dailyCountryArray:string[] = shuffleArray(fs.readdirSync("public/countryOutlines").map((filename:string) => filename),42) // Array containing shuffled country outlines
 const outlineDir = "public/countryOutlines"
 
-const index = getIndex()
+let index = getIndex()
 export default async function fetchGenericCountry(gamemode:string){
+    index = getIndex()
     switch (gamemode){
         case "flag":
             const dailyCountry  = shuffledCountries[index] as string
@@ -17,6 +19,8 @@ export default async function fetchGenericCountry(gamemode:string){
             const country = dailyCountryArray[index] as string
             const fullpath = `${outlineDir.slice(6)}/${country}` // receiving component doesn't want /public/ prefix
             return {country:country,path:fullpath}
+        case "clue":
+            return clueGuessrCountries[index]
     }
 
 }
@@ -51,6 +55,8 @@ export function getCountryName(gamemode:string){
         case "country":
             const countryFile = dailyCountryArray[index]
             return invertedCountryCodeMap[countryFile.slice(0,2).toUpperCase()]
+        case "clue":
+            return clueGuessrCountries[index]
         default:
             throw new Error("Invalid gamemode")
     }
@@ -63,6 +69,8 @@ export function getCountryCode(gamemode:string){
         case "country":
             const countryFile = dailyCountryArray[index] as string
             return countryFile.slice(0,2).toUpperCase()
+        case "clue":
+            return countryCodeMap[clueGuessrCountries[index]]
         default:
             throw new Error("Invalid gamemode")
     }
