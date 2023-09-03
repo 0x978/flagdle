@@ -11,6 +11,7 @@ const config = {
         contrastingBlue:"#53caf5",
         fadedRed:"#c8464a",
         pastelYellow:"#fce87f",
+        pastelGreen:"#77dd77",
       }
     },
   },

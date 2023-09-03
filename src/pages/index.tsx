@@ -32,8 +32,8 @@ const Index: FC = () => {
         }
 
         void fetchFlag()
-        let isPlayed = isPlayedToday(true)
-        if (isPlayed !== null) {
+        let isPlayed = isPlayedToday("flag")
+        if (isPlayed) {
             const stats:[boolean,number] = JSON.parse(isPlayed)
             if (stats[0]) {
                 void handleGameOver(true, "/api/fetchCorrect",stats[1])
@@ -44,16 +44,16 @@ const Index: FC = () => {
     }, [])
 
     function guesser() {
-        handleGuess(currentGuess, "/api/guessHandler", "/api/fetchCorrect", "/api/dailyFacts", setFacts, guesses, setGuesses)
+        handleGuess(currentGuess, "/api/guessHandler", "/api/fetchCorrect", guesses, setGuesses,"/api/dailyFacts", setFacts)
             .then((isCorrect) => {
                 if (isCorrect) {
                     setIsUserCorrect(true)
                     setIsGameActive(false)
-                    memoryWriter(true, true,guesses.length+1)
+                    memoryWriter(true, "flag",guesses.length+1)
                 }
                 if (!isCorrect && guesses.length+1 === 6) {
                     setIsGameActive(false)
-                    memoryWriter(false, true,guesses.length)
+                    memoryWriter(false, "flag",guesses.length)
                     void handleGameOver(false, "/api/fetchCorrect",guesses.length+1)
                 }
             })

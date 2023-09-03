@@ -36,8 +36,8 @@ const CountryGuessr: FC<CountryGuessrProps> = ({}) => {
         }
 
         void fetchCountry()
-        const isPlayed = isPlayedToday(false)
-        if (isPlayed !== null) {
+        const isPlayed = isPlayedToday("country")
+        if (isPlayed) {
             const stats:[string,number] = JSON.parse(isPlayed)
             if (stats[0] === "true") {
                 void handleGameOver(true, "/api/countryGuessr/fetchCorrect",stats[1])
@@ -48,16 +48,16 @@ const CountryGuessr: FC<CountryGuessrProps> = ({}) => {
     }, [])
 
     function guesser() {
-        handleGuess(currentGuess, "/api/countryGuessr/guessHandler/", "/api/countryGuessr/fetchCorrect/", "/api/countryGuessr/fetchFact", setFacts,guesses,setGuesses)
+        handleGuess(currentGuess, "/api/countryGuessr/guessHandler/", "/api/countryGuessr/fetchCorrect/",guesses,setGuesses, "/api/countryGuessr/fetchFact", setFacts)
             .then((isCorrect) => {
                 if (isCorrect) {
                     setIsUserCorrect(true)
                     setIsGameActive(false)
-                    memoryWriter(true, false,guesses.length+1)
+                    memoryWriter(true, "country",guesses.length+1)
                 }
                 if (!isCorrect && guesses.length+1 === 6) {
                     setIsGameActive(false)
-                    memoryWriter(false,false,guesses.length)
+                    memoryWriter(false,"country",guesses.length)
                     void handleGameOver(false,"/api/countryGuessr/fetchCorrect",guesses.length+1)
                 }
             })

@@ -5,7 +5,7 @@ import fetchGenericCountry from "@/components/api/fetchGenericCountry";
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const ip = req.headers["x-real-ip"] as string; // Header is set up on NGINX reverse proxy config
 
-    const flagObj = await fetchGenericCountry("flag")
+    const flagObj = await fetchGenericCountry("flag") as { flag: string, country: string, countryCode: string, index: number };
 
     if(!flagObj){
         res.status(404)

@@ -3,8 +3,8 @@ import {factObject, guess} from "@/misc/types";
 import React from "react";
 
 
-export async function handleGuess(guess: string, verifyAnswerAPI: string, correctAnswerAPI: string, factAPI: string,
-                                  setFacts: React.Dispatch<React.SetStateAction<factObject[]>>, guesses: guess[], setGuesses: React.Dispatch<React.SetStateAction<guess[]>>) {
+export async function handleGuess(guess: string, verifyAnswerAPI: string, correctAnswerAPI: string, guesses: guess[], setGuesses: React.Dispatch<React.SetStateAction<guess[]>>, factAPI?: string,
+                                  setFacts?: React.Dispatch<React.SetStateAction<factObject[]>>,) {
 
     if (guesses.some((ans: guess) => guess === ans.country)) {
         void Swal.fire({
@@ -36,7 +36,7 @@ export async function handleGuess(guess: string, verifyAnswerAPI: string, correc
 
     if (correct) {
         void handleGameOver(true, correctAnswerAPI, guesses.length,guesses)
-    } else if (guesses.length < 6) {
+    } else if (guesses.length < 6 && factAPI && setFacts) {
         const fact = await getFact(guesses.length + 1, factAPI)
         setFacts(prevState => [...prevState, fact])
     }
@@ -53,9 +53,16 @@ async function getFact(guessNumber: number, apiRoute: string) {
     return data.factData
 }
 
-export function isPlayedToday(isFlagGuessr: boolean) {
+export function isPlayedToday(gamemode:string) {
     const today = new Date().toISOString().split('T')[0];
-    return isFlagGuessr ? localStorage.getItem(today) : localStorage.getItem(`C-${today}`)
+    switch (gamemode){
+        case "flag":
+            return localStorage.getItem(today)
+        case "country":
+            return  localStorage.getItem(`C-${today}`)
+        case "clue":
+            return localStorage.getItem(`Clue-${today}`)
+    }
 }
 
 export async function handleGameOver(isCorrect: boolean, apiRoute: string,numberOfGuesses:number, ans?: guess[]) {
@@ -73,10 +80,10 @@ export async function handleGameOver(isCorrect: boolean, apiRoute: string,number
         icon: isCorrect ? "success" : "error",
         html: `<div style='display:flex; flex-direction: column; row-gap: 20px;'> 
                     <h1 style='font-size: larger' >${isCorrect ? `You got the correct answer in <span style='color: #77DD77'>${numberOfGuesses}</span> guesses!`
-            : "You did not get the flag this time!"}
+            : "You did not get the right answer this time!"}
                     </h1>
                     <h1 style='font-size: larger'>The correct answer was: <span style='color: #77DD77'>${correct}</span></h1>
-                    <h1 style='font-size: larger'>A new flag is available at <span style='color: #53caf5'>12:00 AM UTC</span></h1>
+                    <h1 style='font-size: larger'>A new game is available at <span style='color: #53caf5'>12:00 AM UTC</span></h1>
                     <h1 style='font-size: larger'>${isFlagGuessr ? `Why not try to beat today's CountryGuessr?` : '' }</h1>
                     </div>`,
         allowOutsideClick: false,
@@ -90,8 +97,18 @@ export async function handleGameOver(isCorrect: boolean, apiRoute: string,number
     })
 }
 
-export function memoryWriter(isCorrect: boolean, isFlagGuessr: boolean,numberOfGuesses:number) {
+export function memoryWriter(isCorrect: boolean, gamemode:string,numberOfGuesses:number) {
     const data:string[] = [String(isCorrect),(numberOfGuesses+1).toString()]
     const today = new Date().toISOString().split('T')[0];
-    isFlagGuessr ? localStorage.setItem(today, JSON.stringify(data)) : localStorage.setItem(`C-${today}`, JSON.stringify(data))
+    switch (gamemode){
+        case "flag":
+            localStorage.setItem(today, JSON.stringify(data))
+            break
+        case "country":
+            localStorage.setItem(`C-${today}`, JSON.stringify(data))
+            break
+        case "clue":
+            localStorage.setItem(`Clue-${today}`, JSON.stringify(data))
+            break
+    }
 }
