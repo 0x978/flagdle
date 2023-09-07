@@ -35,7 +35,7 @@ export async function handleGuess(guess: string, verifyAnswerAPI: string, correc
     setGuesses(prevState => [...prevState,newGuess])
 
     if (correct) {
-        void handleGameOver(true, correctAnswerAPI, guesses.length,guesses)
+        void handleGameOver(true, correctAnswerAPI, guesses.length+1,guesses)
     } else if (guesses.length < 6 && factAPI && setFacts) {
         const fact = await getFact(guesses.length + 1, factAPI)
         setFacts(prevState => [...prevState, fact])
@@ -98,7 +98,7 @@ export async function handleGameOver(isCorrect: boolean, apiRoute: string,number
 }
 
 export function memoryWriter(isCorrect: boolean, gamemode:string,numberOfGuesses:number) {
-    const data:string[] = [String(isCorrect),(numberOfGuesses+1).toString()]
+    const data:string[] = [String(isCorrect),(numberOfGuesses).toString()]
     const today = new Date().toISOString().split('T')[0];
     switch (gamemode){
         case "flag":
