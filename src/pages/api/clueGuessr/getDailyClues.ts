@@ -37,7 +37,7 @@ function createDailyFacts(clues:customClueObject){
     const isTwoLanguages = Object.values(clues.languages).length > 1
 
     const clueZero = `The country ${clues.landlocked ? "is" : "is not"} landlocked`
-    const clueOne = `The country has a population of ${clues.population} people`
+    const clueOne = `The country has a population of ${clues.population.toLocaleString()} people`
     const clueTwo = `The country is located ${isTwoContinents ? 'mostly ' : ''}in ${clues.continents[0]} ${isTwoContinents ? `, but is also located in ${clues.continents[1]}` : ''}`
     const clueThree = `The country subregion is ${clues.subregion}`
     const clueFour = `The country ${clues.unMember ? 'is' : 'is not'} a member of the UN`
