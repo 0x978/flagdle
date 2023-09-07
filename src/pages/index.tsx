@@ -36,9 +36,9 @@ const Index: FC = () => {
         if (isPlayed) {
             const stats:[boolean,number] = JSON.parse(isPlayed)
             if (stats[0]) {
-                void handleGameOver(true, "/api/fetchCorrect",stats[1])
+                void handleGameOver(true, "/api/fetchCorrect",stats[1],undefined,true,"Why not try out CountryGuessr?","Try CountryGuessr!")
             } else {
-                void handleGameOver(false, "/api/fetchCorrect",stats[1])
+                void handleGameOver(false, "/api/fetchCorrect",stats[1],undefined,true,"Why not try out CountryGuessr?","Try CountryGuessr!")
             }
         }
     }, [])

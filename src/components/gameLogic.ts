@@ -6,6 +6,8 @@ import React from "react";
 export async function handleGuess(guess: string, verifyAnswerAPI: string, correctAnswerAPI: string, guesses: guess[], setGuesses: React.Dispatch<React.SetStateAction<guess[]>>, factAPI?: string,
                                   setFacts?: React.Dispatch<React.SetStateAction<factObject[]>>,) {
 
+    const isFlagGuessr = verifyAnswerAPI.slice(5) === "guessHandler"
+    const isCountryGuessr = verifyAnswerAPI.slice(5,18) === "countryGuessr"
     if (guesses.some((ans: guess) => guess === ans.country)) {
         void Swal.fire({
             title: "Already Guessed",
@@ -35,7 +37,15 @@ export async function handleGuess(guess: string, verifyAnswerAPI: string, correc
     setGuesses(prevState => [...prevState,newGuess])
 
     if (correct) {
-        void handleGameOver(true, correctAnswerAPI, guesses.length+1,guesses)
+        if(isFlagGuessr){
+            void handleGameOver(true, correctAnswerAPI, guesses.length+1,guesses,true,"Why not try out CountryGuessr?","Try CountryGuessr!")
+        }
+        else if(isCountryGuessr){
+            void handleGameOver(true, correctAnswerAPI, guesses.length+1,guesses,true,"Why not try out ClueGuessr?","Try ClueGuessr")
+        }
+        else{
+            void handleGameOver(true, correctAnswerAPI, guesses.length+1,guesses)
+        }
     } else if (guesses.length < 6 && factAPI && setFacts) {
         const fact = await getFact(guesses.length + 1, factAPI)
         setFacts(prevState => [...prevState, fact])
@@ -65,9 +75,14 @@ export function isPlayedToday(gamemode:string) {
     }
 }
 
-export async function handleGameOver(isCorrect: boolean, apiRoute: string,numberOfGuesses:number, ans?: guess[]) {
-    const isFlagGuessr = apiRoute.slice(5) === "fetchCorrect"
-
+export async function handleGameOver(isCorrect: boolean, apiRoute: string,numberOfGuesses:number, ans?: guess[] , showSubmit?:boolean, promptText?:string,submitText?:string ) {
+    let nextGameRoute = ""
+    if(apiRoute.slice(5,18) === "countryGuessr"){
+        nextGameRoute = "/clueGuessr"
+    }
+    else if(apiRoute.slice(5) === "fetchCorrect"){
+        nextGameRoute = "/countryGuessr"
+    }
     const res = await fetch(apiRoute, {
         method: 'POST',
         body: ans?.map((guess) => guess.country).toString()
@@ -84,16 +99,16 @@ export async function handleGameOver(isCorrect: boolean, apiRoute: string,number
                     </h1>
                     <h1 style='font-size: larger'>The correct answer was: <span style='color: #77DD77'>${correct}</span></h1>
                     <h1 style='font-size: larger'>A new game is available at <span style='color: #53caf5'>12:00 AM UTC</span></h1>
-                    <h1 style='font-size: larger'>${isFlagGuessr ? `Why not try to beat today's CountryGuessr?` : '' }</h1>
+                    <h1 style='font-size: larger'>${promptText ?? ""}</h1>
                     </div>`,
         allowOutsideClick: false,
         allowEscapeKey: false,
         background: "#433151",
         color: "#9e75f0",
-        showConfirmButton: isFlagGuessr,
-        confirmButtonText: "Try CountryGuessr"
+        showConfirmButton: showSubmit,
+        confirmButtonText: `${submitText ?? ""}`
     }).then((_) => {
-        window.location.href = "/countryGuessr";
+        window.location.href = nextGameRoute;
     })
 }
 

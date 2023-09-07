@@ -40,9 +40,9 @@ const CountryGuessr: FC<CountryGuessrProps> = ({}) => {
         if (isPlayed) {
             const stats:[string,number] = JSON.parse(isPlayed)
             if (stats[0] === "true") {
-                void handleGameOver(true, "/api/countryGuessr/fetchCorrect",stats[1])
+                void handleGameOver(true, "/api/countryGuessr/fetchCorrect",stats[1],undefined,true,"Why not try out ClueGuessr?","Try ClueGuessr")
             } else {
-                void handleGameOver(false, "/api/countryGuessr/fetchCorrect",stats[1])
+                void handleGameOver(false, "/api/countryGuessr/fetchCorrect",stats[1],undefined,true,"Why not try out ClueGuessr?","Try ClueGuessr")
             }
         }
     }, [])
