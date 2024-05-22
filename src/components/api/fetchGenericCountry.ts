@@ -44,7 +44,7 @@ function isRestart(){
 
     const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
 
-    return daysDifference === 240;
+    return daysDifference >= 240;
 
 }
 
